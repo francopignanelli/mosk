@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Published memory assay · MOSK</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">HUANG, LUO ET AL. · NATURE 2024</p>
+        <h1>A memory we can inspect</h1>
+        <p>
+          This published mushroom-body circuit stores experience as changes in odor-specific
+          connections. Follow each experimental bout to see exactly what changes.
+        </p>
+        <p class="notice">
+          A separate circuit assay, associated with <strong id="fly-name">this fly</strong>. It does
+          not control the habitat fly and is not Google's MaleCNS model.
+        </p>
+      </header>
+      <section class="setup" aria-label="Experiment setup">
+        <label>Published protocol<select id="protocol"></select></label>
+        <label
+          >Odor pair<select id="odor">
+            <option value="attractive">Attractive · ACV / ethyl acetate</option>
+            <option value="repulsive">Repulsive · octanol / benzaldehyde</option>
+          </select></label
+        >
+        <p id="protocol-note" class="help"></p>
+        <button id="restart">Start selected assay</button>
+        <p id="host-status" class="help" role="status">Connecting to the experiment…</p>
+      </section>
+      <section class="transport" aria-label="Assay playback">
+        <div>
+          <span class="eyebrow">BIOLOGICAL ASSAY TIME</span><strong id="clock">0 s</strong
+          ><span id="progress">Bout 0</span>
+        </div>
+        <div class="buttons">
+          <button id="back" aria-label="Previous assay bout">← Back</button
+          ><button id="step">Next bout →</button><button id="play">Play bouts</button>
+        </div>
+        <p class="help">
+          Playback advances whole experimental bouts. It does not change the habitat clock. Moving
+          back reconstructs an earlier state; it does not biologically erase a memory.
+        </p>
+        <p id="next-bout" role="status"></p>
+      </section>
+      <section>
+        <div class="section-title">
+          <h2>What is stored right now</h2>
+          <span>Δ effective KC → MBON weight</span>
+        </div>
+        <p class="help">
+          Six values hold the acquired association: one per odor and compartment. Zero means the
+          initial fitted connection. Negative values mean depression. These are model weight units,
+          not a count of synapses or a confidence score.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Odor</th>
+                <th scope="col">γ1 · short term</th>
+                <th scope="col">α2</th>
+                <th scope="col">α3</th>
+              </tr>
+            </thead>
+            <tbody id="weights"></tbody>
+          </table>
+        </div>
+        <p id="adaptation" class="help"></p>
+      </section>
+      <section>
+        <div class="section-title">
+          <h2>Circuit response</h2>
+          <span>Hz change from baseline</span>
+        </div>
+        <div id="activity" class="activity"></div>
+        <p class="help">
+          DANs carry dopamine teaching signals; MBONs are mushroom-body output neurons. Values
+          describe the just-completed bout before its plasticity update. Negative responses are
+          reductions relative to baseline, not negative absolute firing.
+        </p>
+      </section>
+      <section>
+        <div class="section-title">
+          <h2>Matched comparison</h2>
+          <span id="comparison-label"></span>
+        </div>
+        <p id="comparison-note" class="help"></p>
+        <svg
+          id="comparison"
+          role="img"
+          aria-label="Matched circuit comparison at the final published odor tests"
+          viewBox="0 0 620 170"
+        ></svg>
+        <div class="legend">
+          <span><i></i>Selected assay</span><span><i class="control"></i>Matched control</span>
+        </div>
+        <p class="help">
+          The graph compares each MBON's final CS+ minus CS− test response. The selected line fills
+          when the assay finishes. The control uses the same fitted parameters and its original
+          matched protocol.
+        </p>
+      </section>
+      <section>
+        <div class="section-title">
+          <h2>Live memory log</h2>
+          <span id="log-count"></span>
+        </div>
+        <p class="help">
+          A record of actual numerical updates, including learning, odor adaptation and decay. This
+          is not a transcript of thoughts. Select a row to inspect its stored state.
+        </p>
+        <div class="log-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Time</th>
+                <th scope="col">Experience</th>
+                <th scope="col">CS+ Δweights</th>
+                <th scope="col">CS− Δweights</th>
+              </tr>
+            </thead>
+            <tbody id="memory-log"></tbody>
+          </table>
+        </div>
+        <p id="log-detail" class="help" role="status"></p>
+        <button id="export">Download assay record</button>
+      </section>
+      <details>
+        <summary>How to interpret this experiment</summary>
+        <p>
+          CS+ is the odor paired with a modeled punishment input. CS− is the comparison odor.
+          Conditioning changes effective Kenyon-cell (KC) connections to MBONs. Presenting an odor
+          during imaging also affects this model, so tests are not passive observations. Extinction
+          presents the odors without punishment. Retention includes timed gaps that allow the
+          published decay dynamics to operate.
+        </p>
+        <p>
+          The model uses fitted mean parameters and six DAN/MBON response variables. It does not
+          simulate every anatomical cell, an entire fly brain, spatial recollection, conscious
+          memories or autobiographical statements. This assay has no appetite, predator or motor
+          mapping. All memory here belongs to this assay; a new life starts a fresh assay.
+        </p>
+        <p>
+          The JavaScript port is cross-checked numerically against a separate Python translation of
+          the authors' equations. MATLAB was not executed here. Comparisons reproduce deterministic
+          mean-model behavior, not the paper's confidence intervals or new biological findings.
+        </p>
+      </details>
+      <footer>
+        <a href="https://doi.org/10.1038/s41586-024-07819-w" target="_blank" rel="noreferrer"
+          >Read the paper ↗</a
+        ><a
+          href="https://github.com/schnitzer-lab/Luo_Huang_2024_MB_model/tree/5d7c08a9a88f923169a0c3008aca68af421e9a7f"
+          target="_blank"
+          rel="noreferrer"
+          >Authors' source ↗</a
+        ><a href="./README.md" target="_blank">Methods & source</a
+        ><a href="./LICENSE.txt" target="_blank">GPLv3+</a>
+      </footer>
+    </main>
+    <script type="module" src="./lab.js"></script>
+  </body>
+</html>

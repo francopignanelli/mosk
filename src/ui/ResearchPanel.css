@@ -1,0 +1,173 @@
+.research-panel {
+  background: #fff;
+  border: 1px solid #e5e3eb;
+  border-radius: 18px;
+  overflow: hidden;
+  margin-bottom: 28px;
+}
+.research-intro {
+  padding: 30px 30px 24px;
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+}
+.research-intro h2 {
+  font-size: 27px;
+  letter-spacing: -0.8px;
+  margin: 10px 0;
+}
+.research-intro p {
+  color: #85808e;
+  font-size: 13px;
+  line-height: 1.7;
+  margin: 0;
+}
+.research-specimen {
+  align-self: center;
+  padding: 13px 20px;
+  background: #f6f3fa;
+  border-radius: 12px;
+  color: #795c9f;
+  font-size: 16px;
+  max-width: 220px;
+  overflow-wrap: anywhere;
+}
+.research-specimen small {
+  display: block;
+  font-size: 10px;
+  margin-top: 6px;
+  color: #9d91ad;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.research-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 0 30px 22px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #eeeaf2;
+}
+.research-tabs button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 15px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  color: #87818f;
+  background: transparent;
+  font-size: 12px;
+  cursor: pointer;
+}
+.research-tabs button.active {
+  color: #8966b3;
+  background: #f4eff9;
+  border-color: #e9dff3;
+}
+.research-boundary {
+  margin: 24px 30px 0;
+  padding: 16px 20px;
+  border-left: 3px solid #bba3d4;
+  background: #f8f6fa;
+  border-radius: 0 9px 9px 0;
+}
+.research-boundary strong {
+  font-size: 12px;
+  color: #655773;
+}
+.research-boundary p {
+  font-size: 12px;
+  color: #89818f;
+  line-height: 1.8;
+  margin: 6px 0 0;
+}
+.memory-assay-frame {
+  position: relative;
+  margin: 12px 15px 0;
+}
+.memory-assay-frame iframe {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: #fff;
+}
+.assay-loading {
+  padding: 30px;
+  color: #8c76a3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  font-size: 13px;
+}
+.assay-loading button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 12px;
+  border: 1px solid #e4d9ee;
+  background: white;
+  border-radius: 8px;
+  color: #82659f;
+  cursor: pointer;
+}
+.research-source {
+  font-size: 11px;
+  line-height: 1.9;
+  color: #9b91a3;
+  padding: 18px 30px;
+  margin: 0;
+  border-top: 1px solid #eeeaf2;
+}
+.research-source a {
+  color: #8560aa;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.assay-readonly {
+  padding: 12px 16px;
+  background: #faf5e9;
+  color: #978365;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.research-tabs button:focus-visible,
+.assay-loading button:focus-visible {
+  outline: 2px solid #ab8ad2;
+  outline-offset: 3px;
+}
+@media (max-width: 600px) {
+  .research-intro {
+    padding: 22px 18px;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .research-intro h2 {
+    font-size: 24px;
+  }
+  .research-specimen {
+    align-self: flex-start;
+    padding: 10px 15px;
+  }
+  .research-tabs {
+    padding: 0 12px 16px;
+    gap: 4px;
+  }
+  .research-tabs button {
+    font-size: 11px;
+    padding: 9px 8px;
+    gap: 5px;
+  }
+  .research-boundary {
+    margin: 18px 16px 0;
+    padding: 13px 14px;
+  }
+  .memory-assay-frame {
+    margin: 12px 0 0;
+  }
+  .research-source {
+    padding: 16px 18px;
+  }
+}

@@ -1,0 +1,136 @@
+.world-canvas {
+  container-name: habitat;
+  container-type: inline-size;
+}
+.world-canvas .map-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+}
+.world-canvas .map-controls > .control-group:first-child {
+  justify-self: start;
+}
+.world-canvas .map-controls > .control-group:last-child {
+  justify-self: end;
+}
+.world-canvas .map-vitals {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  width: 354px;
+  max-width: 100%;
+  justify-self: center;
+  gap: 1px;
+  padding: 5px;
+  border: 1px solid #dfd9e8;
+  border-radius: 9px;
+  background: #fffefaeb;
+  box-shadow: 0 2px 9px #55406807;
+  backdrop-filter: blur(8px);
+}
+.map-vital {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 51px;
+  padding: 5px 6px;
+  border-radius: 4px;
+  color: #635775;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+  cursor: help;
+}
+.map-vital + .map-vital {
+  border-left: 1px solid #eae5ef;
+}
+.map-vital small {
+  margin-left: 1px;
+  font-size: 8px;
+  color: #9b90a7;
+}
+.map-vital-tooltip {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 9px;
+  color: #59496a;
+  background: #ffffff;
+  border: 1px solid #ddd3e7;
+  border-radius: 5px;
+  font-size: 11px;
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.map-vital:hover .map-vital-tooltip,
+.map-vital:focus-visible .map-vital-tooltip {
+  opacity: 1;
+}
+.map-vital:focus-visible {
+  outline: 2px solid #a68bc6;
+  outline-offset: 1px;
+}
+.world-canvas .scale-marker {
+  top: 83px;
+  bottom: auto;
+  right: 22px;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+.world-canvas .habitat-tag {
+  max-width: calc(100% - 180px);
+}
+.world-canvas .habitat-tag > span:last-child {
+  line-height: 1.5;
+}
+@media (max-width: 560px) {
+  .world-canvas .habitat-tag {
+    max-width: calc(100% - 125px);
+  }
+  .world-canvas .scale-marker {
+    top: 82px;
+    right: 16px;
+    max-width: 105px;
+  }
+  .world-canvas .scale-marker span {
+    flex-shrink: 0;
+  }
+}
+@container habitat (max-width: 700px) {
+  .world-canvas .map-vitals {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 182px;
+    padding: 4px;
+  }
+  .map-vital {
+    min-width: 50px;
+    padding: 5px;
+  }
+  .map-vital:nth-child(4) {
+    border-left: none;
+  }
+}
+@container habitat (max-width: 560px) {
+  .world-canvas .map-controls {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    row-gap: 10px;
+  }
+  .world-canvas .map-vitals {
+    grid-row: 1;
+    grid-column: 1 / -1;
+  }
+  .world-canvas .map-controls > .control-group:first-child {
+    grid-row: 2;
+    grid-column: 1;
+  }
+  .world-canvas .map-controls > .control-group:last-child {
+    grid-row: 2;
+    grid-column: 2;
+  }
+}

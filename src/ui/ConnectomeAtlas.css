@@ -1,0 +1,228 @@
+.connectome-atlas {
+  margin-top: 24px;
+  padding: 22px;
+  border: 1px solid #e5e0ef;
+  border-radius: 17px;
+  background: #fcfbfe;
+  color: #494355;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.atlas-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.atlas-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #827596;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+.connectome-atlas h3 {
+  margin: 5px 0 0;
+  color: #393140;
+  font-size: 20px;
+  font-weight: 600;
+}
+.atlas-version {
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: #eeebf5;
+  color: #786490;
+  font-size: 11px;
+}
+.connectome-atlas .atlas-intro {
+  margin: 13px 0 16px;
+  max-width: 74ch;
+  color: #797080;
+}
+.atlas-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 15px;
+  margin-bottom: 16px;
+}
+.atlas-summary strong {
+  color: #544562;
+  font-size: 14px;
+}
+.atlas-summary span {
+  color: #8b8194;
+  font-size: 11px;
+}
+.atlas-group-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.connectome-atlas .atlas-group-list button {
+  border: 1px solid #e5deec;
+  border-radius: 7px;
+  padding: 6px 9px;
+  background: #fff;
+  color: #796d86;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.connectome-atlas .atlas-group-list button[aria-pressed='true'] {
+  background: #ebe4f5;
+  border-color: #c6b7de;
+  color: #675080;
+}
+.connectome-atlas .atlas-group-list button:hover {
+  background: #f0eaf8;
+}
+.atlas-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 17px;
+  padding: 9px 12px;
+  border: 1px solid #e3ddeb;
+  border-radius: 9px;
+  color: #9a8eaa;
+  background: #fff;
+}
+.connectome-atlas .atlas-search input {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #554764;
+  font-size: 12px;
+}
+.atlas-search input::placeholder {
+  color: #a095ab;
+}
+.atlas-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.atlas-group-description {
+  margin: 12px 0;
+  font-size: 11px;
+  color: #7d7189;
+}
+.atlas-group-description p {
+  margin: 0;
+}
+.atlas-group-description code {
+  font-size: 10px;
+  word-break: break-word;
+}
+.atlas-table-scroll {
+  max-height: 300px;
+  overflow: auto;
+  border: 1px solid #e9e3f0;
+  border-radius: 9px;
+  background: #fff;
+}
+.atlas-table-scroll table {
+  width: 100%;
+  min-width: 430px;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 11px;
+}
+.atlas-table-scroll th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 9px 12px;
+  background: #f3f0f8;
+  color: #82738e;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.atlas-table-scroll td {
+  padding: 9px 12px;
+  border-top: 1px solid #f0ebf5;
+  vertical-align: top;
+}
+.atlas-table-scroll td strong {
+  display: block;
+  font-weight: 600;
+  color: #5d4d6d;
+}
+.atlas-table-scroll td span,
+.atlas-table-scroll td small {
+  display: block;
+  color: #94879f;
+}
+.atlas-table-scroll td small {
+  font-size: 9px;
+}
+.connectome-atlas .atlas-sample-note {
+  margin: 11px 0 0;
+  color: #92869b;
+  font-size: 10px;
+  line-height: 1.65;
+}
+.atlas-provenance {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #e9e3f0;
+  color: #887b93;
+  font-size: 11px;
+}
+.atlas-provenance summary {
+  cursor: pointer;
+  color: #756282;
+  font-size: 12px;
+}
+.atlas-provenance p {
+  margin: 10px 0;
+}
+.atlas-checksum code {
+  overflow-wrap: anywhere;
+  font-size: 9px;
+}
+.atlas-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 15px;
+}
+.atlas-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #8568a1;
+}
+.atlas-load-state {
+  padding: 15px 0;
+  color: #8b7b98;
+}
+.atlas-load-state button {
+  border: 1px solid #dacfe5;
+  border-radius: 7px;
+  background: #fff;
+  padding: 7px 12px;
+  color: #735487;
+}
+@media (max-width: 600px) {
+  .connectome-atlas {
+    padding: 16px;
+  }
+  .connectome-atlas h3 {
+    font-size: 18px;
+  }
+  .connectome-atlas .atlas-group-list button {
+    font-size: 10px;
+  }
+}

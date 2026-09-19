@@ -1,0 +1,55 @@
+.surface.journal-memory {
+  padding: 0;
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+.journal-memory-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 23px 26px;
+  text-align: left;
+  color: #977ab5;
+}
+.journal-memory-toggle > span {
+  min-width: 0;
+  flex: 1;
+}
+.journal-memory-toggle strong {
+  display: block;
+  color: #645371;
+  font-size: 14px;
+  font-weight: 550;
+}
+.journal-memory-toggle small {
+  display: block;
+  margin-top: 6px;
+  color: #9a90a3;
+  font-size: 11px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.journal-memory-toggle .expanded {
+  transform: rotate(180deg);
+}
+.journal-memory-toggle:focus-visible {
+  outline: 2px solid #a789c7;
+  outline-offset: -4px;
+  border-radius: 12px;
+}
+.journal-memory-explanation {
+  padding: 0 26px 8px;
+  color: #92869c;
+  font-size: 12px;
+  line-height: 1.8;
+}
+@media (max-width: 600px) {
+  .journal-memory-toggle {
+    padding: 20px 17px;
+    gap: 11px;
+  }
+  .journal-memory-explanation {
+    padding: 0 17px 8px;
+  }
+}

@@ -1,0 +1,22 @@
+MaleCNS v1.0 annotation sample
+
+Source dataset: MaleCNS v1.0
+Creators: FlyEM / HHMI Janelia Research Campus, University of Cambridge,
+MRC Laboratory of Molecular Biology, and Google Research.
+Publication: Berg et al. (2026), Sexual dimorphism in the complete connectome
+of the Drosophila male central nervous system.
+https://doi.org/10.1016/j.cell.2026.08.015
+Project and official data: https://male-cns.janelia.org/download/
+License: Creative Commons Attribution 4.0 International (CC BY 4.0).
+https://creativecommons.org/licenses/by/4.0/
+
+MOSK modifications: selected 96 annotation rows and listed fields from the
+official body-annotations-male-cns-v1.0-minconf-0.5.feather file; converted
+body IDs to decimal strings; added exact group counts, headings, and source
+metadata. No connection weights, activity, or functional interpretations
+were added. The source URL, SHA-256, selection rule and counts are embedded
+in malecns-v1.0-atlas.json. Reproduce with scripts/prepare-malecns-atlas.py.
+
+This anatomical reference is not a complete circuit, a trained behavioral
+model, or a memory system, and does not control the MOSK fly.
+The original dataset authors do not endorse MOSK.

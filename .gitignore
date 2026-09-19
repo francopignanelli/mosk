@@ -1,0 +1,9 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.netlify/
+.sites-runtime/
+artifacts/
+.env
+.env.*
+!.env.example
