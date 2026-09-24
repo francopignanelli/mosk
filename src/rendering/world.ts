@@ -3,6 +3,7 @@ import type { ExperimentState, Vec2 } from '../shared/types';
 import { viewBounds } from './camera';
 import { visibleTerrain } from './terrain';
 import { CONFIG } from '../simulation/config';
+import { predatorDetectionRange } from '../predators/update';
 import { drawScentField } from './scent';
 import { drawFog, drawGround } from './landscape';
 import { fieldRandom, landscapeAt } from '../world/landscape';
@@ -301,13 +302,20 @@ export function renderWorld(
     ctx.stroke();
     ctx.setLineDash([]);
   }
-  for (const p of world.predators)
-    if (
-      (typeof p.id === 'string' && p.id.startsWith('observer:spider:')) ||
-      (Math.hypot(p.x - state.fly.x, p.y - state.fly.y) <= CONFIG.sightRadius &&
-        !isInRefugeCore(world.regions, state.fly))
-    )
-      spider(ctx, p.x, p.y, p.heading, p.mode === 'pursuing', state.fly.age);
+  const flyHidden = isInRefugeCore(world.regions, state.fly);
+  const detectionRange = predatorDetectionRange(state.world, state.fly);
+  for (const p of world.predators) {
+    const observerPlaced = typeof p.id === 'string' && p.id.startsWith('observer:spider:');
+    const distanceToFly = Math.hypot(p.x - state.fly.x, p.y - state.fly.y);
+    const inFlySight = !flyHidden && distanceToFly <= CONFIG.sightRadius;
+    if (!observerPlaced && !inFlySight) continue;
+    ctx.save();
+    // Keep deliberate map interventions inspectable, but distinguish an animal
+    // that is visible only to the observer from a possible live chase.
+    if (observerPlaced && (flyHidden || distanceToFly >= detectionRange)) ctx.globalAlpha *= 0.48;
+    spider(ctx, p.x, p.y, p.heading, p.mode === 'pursuing', state.fly.age);
+    ctx.restore();
+  }
   ctx.font = '500 11px monospace';
   ctx.textAlign = 'center';
   ctx.fillStyle = '#a29aaa';

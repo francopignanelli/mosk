@@ -91,9 +91,18 @@ export function Tutorial() {
               drag in explored, active terrain. Choose Move map to pan again. Each placement becomes
               part of the current experiment and is saved automatically. Pause first and compare the
               fly’s behavior before and after one change at a time. These stimuli reach the roaming
-              fly through its ordinary local senses; they do not train the separate memory assay.
-              A spider you place stays visible in explored, active terrain so you can inspect the
+              fly through its ordinary local senses; they do not train the separate memory assay. A
+              spider you place stays visible in explored, active terrain so you can inspect the
               test, even when the fly cannot yet sense it.
+            </p>
+            <p>
+              Added spiders follow the same pursuit rules as generated spiders. To test a chase,
+              place one within about 145 world units of an exposed fly, outside dense refuge cover,
+              then resume. If no chase is active, a deliberate placement can begin one even during
+              the usual recovery interval. Farther away or behind cover, the spider roams until it
+              can detect the fly. Faint spiders are outside detection range or hidden by cover;
+              visibility on your map does not expand the fly’s senses. The Random baseline never
+              triggers a fleeing response.
             </p>
             <p>
               <Waves size={14} className="guide-inline-icon" /> Food scent field adds a soft visual
@@ -112,9 +121,12 @@ export function Tutorial() {
             </p>
             <p>
               Only one spider can chase at a time, for up to eight simulation seconds, followed by
-              twelve seconds without a new pursuit. Contact still causes injury. Health tracks
-              injury: bites and severe deprivation reduce it. Recovery requires rest and adequate
-              reserves; a fly that avoids injury can still stay at 100%.
+              twelve seconds of recovery for ordinary encounters. A healthy fly’s base escape speed
+              is 76 world units per simulation second. Avoiding obstacles changes its heading
+              without slowing that escape speed, although low energy, poor health and collisions can
+              hinder movement. Contact still causes injury. Health tracks injury: bites and severe
+              deprivation reduce it. Recovery requires rest and adequate reserves; a fly that avoids
+              injury can still stay at 100%.
             </p>
           </div>
         </details>

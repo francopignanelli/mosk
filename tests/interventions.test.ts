@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { parseSnapshot } from '../src/persistence/storage';
+import { CONFIG } from '../src/simulation/config';
 import { createExperiment, createSnapshot, stepExperiment } from '../src/simulation/engine';
 import { syncWorld } from '../src/world/generate';
 import { placeIntervention } from '../src/world/interventions';
@@ -26,6 +27,30 @@ describe('observer habitat interventions', () => {
     expect(observed.fly.encounters).toBe(1);
   });
 
+  it('moves a painted spider by the same pursuit rules as an existing spider', () => {
+    const painted = openHabitat();
+    expect(
+      placeIntervention(painted, 'spider', { x: painted.fly.x + 100, y: painted.fly.y }).ok,
+    ).toBe(true);
+    const existing = openHabitat();
+    existing.world.predators.push({
+      ...painted.world.predators[0],
+      id: 'existing-spider',
+      mode: 'roaming',
+      lastSeen: { x: painted.fly.x + 100, y: painted.fly.y },
+      attention: 0,
+    });
+    stepExperiment(painted);
+    stepExperiment(existing);
+    const { id: _paintedId, ...paintedSpider } = painted.world.predators[0];
+    const { id: _existingId, ...existingSpider } = existing.world.predators[0];
+    expect(paintedSpider).toEqual(existingSpider);
+    expect(painted.fly).toEqual(existing.fly);
+    expect(painted.world.predatorEncounter?.chaseRemaining).toBe(
+      existing.world.predatorEncounter?.chaseRemaining,
+    );
+  });
+
   it('places fresh food, refillable water, and a spider without advancing simulation randomness', () => {
     const state = openHabitat();
     const rng = state.rngState;
@@ -48,9 +73,14 @@ describe('observer habitat interventions', () => {
     });
     expect(state.world.predators[0]).toMatchObject({
       id: 'observer:spider:0:3',
-      mode: 'roaming',
-      lastSeen: { x: 520, y: 380 },
-      attention: 0,
+      mode: 'pursuing',
+      lastSeen: { x: state.fly.x, y: state.fly.y },
+      attention: CONFIG.predatorLoseTime,
+    });
+    expect(state.world.predatorEncounter).toEqual({
+      pursuerId: 'observer:spider:0:3',
+      chaseRemaining: CONFIG.predatorChaseDuration,
+      cooldownRemaining: 0,
     });
     expect(state.events.slice(1).map((event) => event.kind)).toEqual([
       'intervention',
@@ -66,6 +96,62 @@ describe('observer habitat interventions', () => {
       stepExperiment(restored);
     }
     expect(restored).toEqual(state);
+  });
+
+  it('starts a bounded controlled chase during recovery without replacing an active pursuer', () => {
+    const state = openHabitat();
+    state.world.predatorEncounter = {
+      pursuerId: null,
+      chaseRemaining: 0,
+      cooldownRemaining: 5,
+    };
+    const placed = placeIntervention(state, 'spider', { x: state.fly.x + 100, y: state.fly.y });
+    expect(placed.ok).toBe(true);
+    expect(state.world.predatorEncounter?.pursuerId).toBe(state.world.predators[0].id);
+    expect(state.world.predatorEncounter?.cooldownRemaining).toBe(0);
+    stepExperiment(state);
+    expect(state.world.predators[0].mode).toBe('pursuing');
+    expect(state.fly.action).toBe('fleeing');
+
+    const second = placeIntervention(state, 'spider', {
+      x: state.fly.x - 100,
+      y: state.fly.y,
+    });
+    expect(second.ok).toBe(true);
+    expect(second.ok && second.message).toMatch(/Another spider owns/);
+    expect(state.world.predatorEncounter?.pursuerId).toBe(state.world.predators[0].id);
+    expect(state.world.predators[1].mode).toBe('roaming');
+
+    for (let i = 0; i < Math.ceil(CONFIG.predatorChaseDuration / CONFIG.dt); i++)
+      stepExperiment(state);
+    expect(state.world.predatorEncounter?.pursuerId).toBeNull();
+    expect(state.world.predatorEncounter?.cooldownRemaining).toBeGreaterThan(0);
+  });
+
+  it('keeps a distant painted spider roaming and explains the detection limit', () => {
+    const state = openHabitat();
+    const result = placeIntervention(state, 'spider', {
+      x: state.fly.x + 200,
+      y: state.fly.y,
+    });
+    expect(result.ok && result.message).toMatch(/Outside spider detection range/);
+    expect(state.world.predators[0].mode).toBe('roaming');
+    expect(state.world.predatorEncounter).toBeUndefined();
+    stepExperiment(state);
+    expect(state.world.predators[0].mode).toBe('roaming');
+  });
+
+  it('explains that a saved random-baseline fly does not flee a pursuing spider', () => {
+    const state = openHabitat();
+    state.brain.mode = 'random';
+    const result = placeIntervention(state, 'spider', {
+      x: state.fly.x + 100,
+      y: state.fly.y,
+    });
+    expect(result.ok && result.message).toMatch(/Random baseline does not trigger an escape/);
+    stepExperiment(state);
+    expect(state.world.predators[0].mode).toBe('pursuing');
+    expect(state.fly.action).not.toBe('fleeing');
   });
 
   it('rejects fog, invalid points, and dead lives without changing the saved life', () => {

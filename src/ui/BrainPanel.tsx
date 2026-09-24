@@ -302,6 +302,10 @@ export function BrainPanel({
             <br />
             Map placements can change these values when sensed locally.
             <br />
+            {state.brain.mode === 'adaptive'
+              ? 'Escape commands 76 world units/s; low reserves or contact can slow actual movement.'
+              : 'Random baseline does not engage an escape response to spiders.'}
+            <br />
             They do not train the separate memory assay. MaleCNS anatomy is in the research atlas.
           </p>
           {onResearch && (

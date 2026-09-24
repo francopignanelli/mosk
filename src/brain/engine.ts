@@ -151,7 +151,9 @@ export class UtilityBrain implements BrainEngine {
     }
     if (s.obstacle && speed > 0) {
       turn = s.obstacle.bearing >= 0 ? -1 : 1;
-      speed *= 0.65;
+      // Keep the escape command at full speed while steering around cover.
+      // Actual contact still limits displacement in the motor decoder.
+      if (action !== 'fleeing') speed *= 0.65;
     }
     if (s.touch && speed > 0) turn = 1;
     return output(state, action, turn, speed, s, dt);

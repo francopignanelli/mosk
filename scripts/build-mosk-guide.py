@@ -320,7 +320,7 @@ def page_three(c: canvas.Canvas):
          "Acerca o aleja con la rueda o los botones de zoom. Arrastra para mover la cámara y vuelve a seguir a la mosca con el control de centrado. El terreno aparece a medida que la mosca explora; mirar con la cámara no descubre lugares.",
          BLUE, BLUE_PALE)
     step(c, 460, 112, "03", "Intervenir con el pincel",
-         "Elige <b>comida, agua o araña</b> en la paleta dentro del mapa y haz clic o arrastra para colocar objetos discretos sobre terreno ya revelado y cercano a la mosca. Observa la reacción sin cambiar varias condiciones a la vez. Las intervenciones quedan registradas en las notas del experimento y en la copia guardada.",
+         "Elige <b>comida, agua o araña</b> y haz clic o arrastra sobre terreno revelado y cercano. Una araña pintada junto a una mosca expuesta inicia enseguida un encuentro acotado si no hay otra perseguidora, incluso durante la recuperación. La intervención queda en las notas y en el archivo guardado.",
          ORANGE, ORANGE_PALE)
     step(c, 337, 104, "04", "Leer la respuesta",
          "Relaciona trayectoria, estado interno y eventos. En <b>Brain Activity</b>, pasa el cursor o enfoca un nodo para ver su valor, entrada e influencia ilustrativa. El panel describe el controlador activo; no es una lectura de neuronas biológicas.",
@@ -358,7 +358,7 @@ def page_four(c: canvas.Canvas):
                "La fruta se consume, decae y reaparece en otra posición del sector tras un ciclo de 10 a 13 minutos simulados. Los estanques permanecen y se rellenan lentamente. El olor muestra una pista local, no una ubicación conocida.",
                ORANGE_PALE, ORANGE)
     small_card(c, M, 486, hw, 191, "RIESGO", "Arañas y persecución",
-               "Una araña cercana puede perseguir, pero cada encuentro tiene un máximo de 8 segundos y después 12 segundos de recuperación compartida. El contacto todavía puede lesionar; los valores expresan balance de juego, no mediciones etológicas.",
+               "Cada encuentro dura hasta 8 s y sigue con 12 s de recuperación compartida. Una araña pintada junto a la mosca expuesta lo inicia aun durante esa recuperación si no hay otra perseguidora. Las lejanas o cubiertas deambulan; fuera de detección se ven atenuadas. El contacto lesiona. Son reglas de juego, no etología.",
                ROSE_PALE, ROSE)
     small_card(c, M+hw+gap, 486, hw, 191, "REFUGIO", "Cobertura con costo",
                "El núcleo frondoso impide entrada, visión y mordidas de arañas. El borde sigue siendo vulnerable. Allí la mosca puede descansar, pero el hambre y la sed continúan; buscar recursos obliga a salir.",
@@ -377,7 +377,7 @@ def page_four(c: canvas.Canvas):
         c.drawString(x+12,221,lab)
     line(c, M+18, 204, W-M-18)
     para(c,
-         "Las decisiones priorizan escapar, beber, comer, recuperarse o explorar según señales cercanas y necesidades actuales. La salud se recupera con descanso y recursos suficientes; no hay envejecimiento ni una vida máxima programada. Los porcentajes son escalas internas del modelo, no medidas fisiológicas calibradas.",
+         "El controlador prioriza escapar, beber, comer, recuperarse o explorar. La huida usa una velocidad nominal de 76 unidades/s y rodea obstáculos; reservas bajas o choques reducen el avance real. La referencia aleatoria no huye. No hay envejecimiento ni vida máxima programada; los porcentajes son escalas internas, no medidas biológicas.",
          M+18, 191, CW-36, size=9.1, leading=13.1, max_height=65)
     footer(c, 4)
     c.showPage()

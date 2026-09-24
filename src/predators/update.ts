@@ -5,6 +5,11 @@ import { isInRefugeCore, refugeAt, refugeCoreRadius } from '../world/refuge';
 
 const SPIDER_RADIUS = 7;
 
+/** Observer and generated spiders use the same detection distance. */
+export function predatorDetectionRange(world: World, fly: Fly): number {
+  return CONFIG.predatorSight * (refugeAt(world.regions, fly) ? 0.35 : 1);
+}
+
 function keepOutsideCover(predator: Predator, refuges: Region[]) {
   const occupied = refuges.find(
     (refuge) => distance(predator, refuge) < refugeCoreRadius(refuge) + SPIDER_RADIUS,
@@ -61,7 +66,7 @@ function keepOutsideCover(predator: Predator, refuges: Region[]) {
 
 export function updatePredators(world: World, fly: Fly, dt: number, random: () => number) {
   const hidden = isInRefugeCore(world.regions, fly);
-  const sheltered = !!refugeAt(world.regions, fly);
+  const detectionRange = predatorDetectionRange(world, fly);
   const refuges = world.regions.filter((region) => region.kind === 'refuge');
   const legacy = !world.predatorEncounter;
   const encounter = (world.predatorEncounter ??= {
@@ -89,7 +94,7 @@ export function updatePredators(world: World, fly: Fly, dt: number, random: () =
     const candidates = world.predators.filter((p) => {
       const d = distance(p, fly);
       return (
-        d < CONFIG.predatorSight * (sheltered ? 0.35 : 1) ||
+        d < detectionRange ||
         (legacy && p.mode !== 'roaming' && p.attention > 0 && d <= CONFIG.predatorActiveRadius)
       );
     });
@@ -117,7 +122,7 @@ export function updatePredators(world: World, fly: Fly, dt: number, random: () =
       p.mode = 'roaming';
     }
     if (d > CONFIG.predatorActiveRadius) continue;
-    if (p === pursuer && d < CONFIG.predatorSight * (sheltered ? 0.35 : 1)) {
+    if (p === pursuer && d < detectionRange) {
       p.mode = 'pursuing';
       p.lastSeen = { x: fly.x, y: fly.y };
       p.attention = CONFIG.predatorLoseTime;

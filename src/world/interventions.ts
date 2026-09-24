@@ -1,8 +1,10 @@
 import { distance } from '../shared/math';
-import type { ExperimentState, Resource, Vec2, World } from '../shared/types';
+import { predatorDetectionRange } from '../predators/update';
+import { CONFIG } from '../simulation/config';
+import type { ExperimentState, Predator, Resource, Vec2, World } from '../shared/types';
 import { chunkKeyAt } from './generate';
 import { isRevealed } from './discovery';
-import { refugeCoreRadius } from './refuge';
+import { isInRefugeCore, refugeCoreRadius } from './refuge';
 
 export type InterventionKind = 'food' | 'water' | 'spider';
 export type InterventionResult = { ok: true; message: string } | { ok: false; reason: string };
@@ -83,6 +85,7 @@ export function placeIntervention(
   if (kind === 'spider' && distance(state.fly, point) < 50)
     return { ok: false, reason: 'Place the spider farther from the fly.' };
 
+  let response = '';
   if (kind === 'spider') {
     const observerSpiders = [
       ...world.predators,
@@ -101,7 +104,7 @@ export function placeIntervention(
       ).length >= MAX_OBSERVER_SPIDERS_PER_SECTOR
     )
       return { ok: false, reason: 'This sector has reached its spider edit limit.' };
-    world.predators.push({
+    const spider: Predator = {
       id: observerId(state, kind),
       x: point.x,
       y: point.y,
@@ -109,7 +112,31 @@ export function placeIntervention(
       mode: 'roaming',
       lastSeen: { x: point.x, y: point.y },
       attention: 0,
-    });
+    };
+    world.predators.push(spider);
+    const detectionRange = predatorDetectionRange(world, state.fly);
+    if (isInRefugeCore(world.regions, state.fly)) {
+      response = 'Dense cover hides the fly; this spider roams until it emerges.';
+    } else if (distance(spider, state.fly) >= detectionRange) {
+      response = `Outside spider detection range (${Math.round(detectionRange)} units here); it roams until the fly comes closer.`;
+    } else if (world.predatorEncounter?.pursuerId != null) {
+      response = 'Another spider owns the current chase; this one roams for now.';
+    } else {
+      // An observer deliberately introducing a visible predator starts a new
+      // controlled encounter, even during the automatic recovery interval.
+      // The same finite chase budget and update loop apply thereafter.
+      spider.mode = 'pursuing';
+      spider.lastSeen = { x: state.fly.x, y: state.fly.y };
+      spider.attention = CONFIG.predatorLoseTime;
+      world.predatorEncounter = {
+        pursuerId: spider.id,
+        chaseRemaining: CONFIG.predatorChaseDuration,
+        cooldownRemaining: 0,
+      };
+      response = 'It detected the fly and will pursue when the simulation runs.';
+    }
+    if (state.brain.mode === 'random')
+      response += ' Random baseline does not trigger an escape response.';
   } else {
     if (
       world.resources.filter(
@@ -139,7 +166,7 @@ export function placeIntervention(
       };
     world.resources.push(resource);
   }
-  const message = `Observer placed ${kind === 'spider' ? 'a spider' : kind} at (${Math.round(point.x)}, ${Math.round(point.y)}).`;
+  const message = `Observer placed ${kind === 'spider' ? 'a spider' : kind} at (${Math.round(point.x)}, ${Math.round(point.y)}).${response ? ` ${response}` : ''}`;
   state.events.push({ id: state.tick, time: state.fly.age, kind: 'intervention', message });
   return { ok: true, message };
 }

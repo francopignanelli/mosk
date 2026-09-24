@@ -32,6 +32,28 @@ function update(state: ReturnType<typeof setup>, seconds: number) {
 }
 
 describe('bounded predator encounters', () => {
+  it('keeps the healthy fly at full escape speed while steering around a nearby obstacle', () => {
+    const open = setup();
+    open.world.resources = [];
+    open.fly.heading = 0;
+    open.world.predators[0].x = open.fly.x - 100;
+    open.world.predators[0].y = open.fly.y;
+    const obstacle = structuredClone(open);
+    obstacle.world.obstacles.push({
+      x: obstacle.fly.x + 45,
+      y: obstacle.fly.y,
+      radius: 12,
+      kind: 'rock',
+    });
+    stepExperiment(open);
+    stepExperiment(obstacle);
+    expect(open.fly.action).toBe('fleeing');
+    expect(obstacle.fly.action).toBe('fleeing');
+    expect(open.fly.distance / CONFIG.dt).toBeCloseTo(CONFIG.fleeSpeed);
+    expect(obstacle.fly.distance / CONFIG.dt).toBeCloseTo(CONFIG.fleeSpeed);
+    expect(obstacle.fly.heading).not.toBe(open.fly.heading);
+  });
+
   it('lets a spider detect the fly before the utility controller starts fleeing', () => {
     const state = setup();
     state.world.resources = [];
