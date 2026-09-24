@@ -15,6 +15,8 @@ import {
 } from '../persistence/storage';
 import type { ArchivedGeneration, BrainMode, Snapshot } from '../shared/types';
 import { DEFAULT_FLY_NAME, normalizeFlyName } from '../shared/flyName';
+import { placeIntervention, type InterventionKind } from '../world/interventions';
+import type { Vec2 } from '../shared/types';
 
 export function useExperiment() {
   const [initialState] = useState(() => createExperiment());
@@ -280,6 +282,16 @@ export function useExperiment() {
     render((v) => v + 1);
     await save();
   };
+  const addMapIntervention = (kind: InterventionKind, point: Vec2) => {
+    if (readOnly || !enabled.current || importing.current)
+      return { ok: false as const, reason: 'This experiment is not editable in this tab.' };
+    const result = placeIntervention(state.current, kind, point);
+    if (result.ok) {
+      render((v) => v + 1);
+      void save();
+    }
+    return result;
+  };
   const updateAssay = (checkpoint: AssayCheckpoint, generation: number) => {
     if (
       readOnly ||
@@ -353,6 +365,7 @@ export function useExperiment() {
     save,
     newGeneration,
     renameFly,
+    placeIntervention: addMapIntervention,
     updateAssay,
     importExperiment,
     exportExperiment,

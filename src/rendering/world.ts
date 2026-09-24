@@ -303,8 +303,9 @@ export function renderWorld(
   }
   for (const p of world.predators)
     if (
-      Math.hypot(p.x - state.fly.x, p.y - state.fly.y) <= CONFIG.sightRadius &&
-      !isInRefugeCore(world.regions, state.fly)
+      (typeof p.id === 'string' && p.id.startsWith('observer:spider:')) ||
+      (Math.hypot(p.x - state.fly.x, p.y - state.fly.y) <= CONFIG.sightRadius &&
+        !isInRefugeCore(world.regions, state.fly))
     )
       spider(ctx, p.x, p.y, p.heading, p.mode === 'pursuing', state.fly.age);
   ctx.font = '500 11px monospace';

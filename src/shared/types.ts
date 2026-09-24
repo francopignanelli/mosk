@@ -135,7 +135,15 @@ export interface BrainOutput {
 export interface ExperimentEvent {
   id: number;
   time: number;
-  kind: 'birth' | 'food' | 'threat' | 'rest' | 'death' | 'generation' | 'exploration';
+  kind:
+    | 'birth'
+    | 'food'
+    | 'threat'
+    | 'rest'
+    | 'death'
+    | 'generation'
+    | 'exploration'
+    | 'intervention';
   message: string;
 }
 export interface MetricSample {

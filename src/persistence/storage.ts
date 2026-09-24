@@ -308,9 +308,11 @@ function validateState(value: unknown, infinite: boolean, discovery = false) {
     text(e.message, 'event message');
     oneOf(
       e.kind,
-      infinite
-        ? ['birth', 'food', 'threat', 'rest', 'death', 'generation', 'exploration']
-        : ['birth', 'food', 'threat', 'rest', 'death', 'generation'],
+      discovery
+        ? ['birth', 'food', 'threat', 'rest', 'death', 'generation', 'exploration', 'intervention']
+        : infinite
+          ? ['birth', 'food', 'threat', 'rest', 'death', 'generation', 'exploration']
+          : ['birth', 'food', 'threat', 'rest', 'death', 'generation'],
       'event kind',
     );
   });

@@ -6,6 +6,8 @@ import { viewBounds, wheelZoom, zoomCameraAt } from '../src/rendering/camera';
 import { createExperiment } from '../src/simulation/engine';
 import { WorldView } from '../src/ui/WorldView';
 
+const ignoredPlacement = () => ({ ok: false as const, reason: 'Read-only test' });
+
 describe('observer zoom', () => {
   it('keeps the same world point under the pointer at arbitrary coordinates', () => {
     const center = { x: -23785, y: 87900 };
@@ -67,7 +69,11 @@ describe('map controls and live vitals', () => {
   it('zooms only over the map, preserves follow mode and respects the button limits', async () => {
     const current = createExperiment('observer-wheel');
     const before = structuredClone(current);
-    await act(async () => root.render(<WorldView state={{ current }} />));
+    await act(async () =>
+      root.render(
+        <WorldView state={{ current }} editable={false} onIntervene={ignoredPlacement} />,
+      ),
+    );
     const canvas = host.querySelector('canvas')!;
     const wheel = (target: Element, deltaY: number) => {
       const event = new WheelEvent('wheel', { deltaY, bubbles: true, cancelable: true });
@@ -101,7 +107,13 @@ describe('map controls and live vitals', () => {
 
   it('keeps free-camera mode while zooming and detaches the wheel handler on unmount', async () => {
     await act(async () =>
-      root.render(<WorldView state={{ current: createExperiment('free-wheel') }} />),
+      root.render(
+        <WorldView
+          state={{ current: createExperiment('free-wheel') }}
+          editable={false}
+          onIntervene={ignoredPlacement}
+        />,
+      ),
     );
     const canvas = host.querySelector('canvas')!;
     const map = host.querySelector('.world-canvas')!;
@@ -136,7 +148,9 @@ describe('map controls and live vitals', () => {
       health: 100,
       threat: 0,
     };
-    await act(async () => root.render(<WorldView state={state} />));
+    await act(async () =>
+      root.render(<WorldView state={state} editable={false} onIntervene={ignoredPlacement} />),
+    );
     const names = () =>
       Array.from(host.querySelectorAll('.map-vital')).map((item) =>
         item.getAttribute('aria-label'),
@@ -150,7 +164,35 @@ describe('map controls and live vitals', () => {
       'Arousal: 0%',
     ]);
     state.current.fly.vitals.health = 64;
-    await act(async () => root.render(<WorldView state={state} />));
+    await act(async () =>
+      root.render(<WorldView state={state} editable={false} onIntervene={ignoredPlacement} />),
+    );
     expect(names()).toContain('Health: 64%');
+  });
+
+  it('passes a painted food stimulus at the keyboard cursor to the intervention handler', async () => {
+    const state = { current: createExperiment('brush-keyboard') };
+    const onIntervene = vi.fn(() => ({ ok: true as const, message: 'Food added' }));
+    await act(async () =>
+      root.render(<WorldView state={state} editable onIntervene={onIntervene} />),
+    );
+    const canvas = host.querySelector('canvas')!;
+    await act(async () =>
+      host.querySelector<HTMLButtonElement>('[aria-label="Paint food on map"]')!.click(),
+    );
+    await act(async () =>
+      canvas.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })),
+    );
+    expect(onIntervene).toHaveBeenCalledWith('food', {
+      x: state.current.fly.x,
+      y: state.current.fly.y,
+    });
+    expect(host.querySelector('[role="status"]')?.textContent).toBe('Food added');
+    await act(async () =>
+      canvas.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })),
+    );
+    expect(host.querySelector('[aria-label="Move map"]')?.getAttribute('aria-pressed')).toBe(
+      'true',
+    );
   });
 });

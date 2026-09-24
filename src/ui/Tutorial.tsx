@@ -87,6 +87,15 @@ export function Tutorial() {
               through it.
             </p>
             <p>
+              To test a response, choose the Food, Water or Spider brush on the map, then click or
+              drag in explored, active terrain. Choose Move map to pan again. Each placement becomes
+              part of the current experiment and is saved automatically. Pause first and compare the
+              fly’s behavior before and after one change at a time. These stimuli reach the roaming
+              fly through its ordinary local senses; they do not train the separate memory assay.
+              A spider you place stays visible in explored, active terrain so you can inspect the
+              test, even when the fly cannot yet sense it.
+            </p>
+            <p>
               <Waves size={14} className="guide-inline-icon" /> Food scent field adds a soft visual
               cue around food. Its low contrast is a display choice and does not change what the fly
               senses. Movement trail shows its recent path.
@@ -143,10 +152,12 @@ export function Tutorial() {
           </summary>
           <div>
             <p>
-              Names, habitat state and the attached assay checkpoint are saved with each individual.
-              Reloading replays the recorded protocol to reconstruct the same weights. Export
-              experiment creates a portable JSON copy; importing replaces this device’s current
-              experiment and archive.
+              Names, habitat state, map placements and the attached assay checkpoint are saved
+              automatically on this device. Reloading replays the recorded assay protocol to
+              reconstruct the same weights. Export JSON downloads a portable backup of the current
+              experiment and archive. Import JSON restores such a file here, replacing the current
+              experiment and archive; the restored life opens paused. Export first if you want to
+              keep both runs.
             </p>
             <p>
               A new generation starts fresh controller and assay state. Previous records remain in

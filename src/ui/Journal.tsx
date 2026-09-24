@@ -4,6 +4,7 @@ import {
   Brain,
   ChevronDown,
   Clock3,
+  Hand,
   Leaf,
   Route,
   ShieldAlert,
@@ -84,6 +85,7 @@ export function EventList({ state, limit = 5 }: { state: ExperimentState; limit?
     death: ShieldAlert,
     generation: BookOpen,
     exploration: Route,
+    intervention: Hand,
   };
   return (
     <div className="event-list">

@@ -246,23 +246,24 @@ function App() {
             </nav>
             <div className="data-actions">
               <button
-                title="Import experiment"
-                aria-label="Import experiment"
+                title="Import a JSON backup to restore an experiment on this device"
+                aria-label="Import JSON backup"
                 onClick={() => file.current?.click()}
                 disabled={sim.readOnly}
               >
                 <ArrowUpFromLine size={15} />
-                <span>Import</span>
+                <span>Import JSON</span>
               </button>
               <button
-                aria-label="Export experiment"
+                title="Download a JSON backup of this experiment and its archive"
+                aria-label="Export JSON backup"
                 onClick={() => {
                   sim.exportExperiment();
-                  notify('Experiment exported as JSON.');
+                  notify('JSON backup downloaded.');
                 }}
               >
                 <ArrowDownToLine size={15} />
-                <span>Export experiment</span>
+                <span>Export JSON</span>
               </button>
             </div>
           </div>
@@ -291,7 +292,11 @@ function App() {
                       SEED <strong>{state.world.seed}</strong>
                     </span>
                   </div>
-                  <WorldView state={sim.state} />
+                  <WorldView
+                    state={sim.state}
+                    editable={!sim.readOnly && fly.alive}
+                    onIntervene={sim.placeIntervention}
+                  />
                   <div className="world-footer">
                     <div className="world-legend">
                       <span>
@@ -456,10 +461,10 @@ function App() {
                 <div className="observation-note">
                   <span className="note-symbol">✳</span>
                   <div>
-                    <h3>Observe. Don’t intervene.</h3>
+                    <h3>Observe. Then test a cue.</h3>
                     <p>
-                      Every turn, pause, and pursuit comes from the fly’s own sensory loop. You’re
-                      here to watch a little life find its way.
+                      Watch the fly’s sensory loop, then place food, water or a spider on the map.
+                      Compare what the fly senses and does next.
                     </p>
                   </div>
                 </div>
@@ -480,7 +485,7 @@ function App() {
               <span className="footer-slash">/</span> v0.1
             </span>
             <button onClick={() => setModal('about')}>
-              Made of signals, not certainty <ArrowUpRightIcon />
+              By Franco Pignanelli <ArrowUpRightIcon />
             </button>
           </footer>
         </main>
@@ -634,7 +639,7 @@ function App() {
         </Modal>
       )}
       {modal === 'import' && pendingImport && (
-        <Modal title="Continue another experiment" onClose={() => !busy && setModal(null)}>
+        <Modal title="Restore a saved experiment" onClose={() => !busy && setModal(null)}>
           <p className="modal-intro">
             Generation {pendingImport.current.generation} · {pendingImport.current.world.seed}
             <br />
@@ -642,13 +647,14 @@ function App() {
             archived generations.
           </p>
           <div className="import-notice">
-            Importing replaces the experiment on this device, including its archive. Export your
-            current experiment first if you want to keep it.
+            This JSON backup will replace the experiment on this device, including its current life
+            and archive. Export the current experiment first if you want to keep a copy. The
+            restored life opens paused.
           </div>
           <div className="modal-actions">
             <button className="button secondary" onClick={sim.exportExperiment}>
               <ArrowDownToLine size={16} />
-              Export current
+              Export current JSON
             </button>
             <button
               className="button primary"
@@ -667,7 +673,7 @@ function App() {
                 }
               }}
             >
-              Import & pause
+              Restore & pause
               <ArrowRight size={16} />
             </button>
           </div>
@@ -682,6 +688,10 @@ function App() {
           <p className="modal-intro">
             MOSK is a digital terrarium for an autonomous virtual fruit fly. It is an experiment in
             behavior, not a claim to simulate a complete biological animal.
+          </p>
+          <p>
+            Created by Franco Pignanelli as a visual, interactive way to explore published fruit-fly
+            brain research and the practical limits of turning it into a simulation.
           </p>
           <div className="method-flow">
             <span>World</span>
@@ -707,10 +717,11 @@ function App() {
           </p>
           <h3>Where MaleCNS fits</h3>
           <p>
-            MaleCNS v1.0 is a reconstruction of an adult male fruit fly’s central nervous system.
-            The reference atlas now includes source-identified cells from the official annotation
-            dataset, with provenance and attribution. That atlas is anatomy, not simulated neural
-            activity. The full connection graph does not control the roaming fly.
+            MaleCNS v1.0 is a reconstruction of an adult male fruit fly’s central nervous system
+            published by HHMI Janelia, Google Research and collaborators. The reference atlas
+            includes source-identified cells from the official annotation dataset, with provenance
+            and attribution. That atlas is anatomy, not simulated neural activity. The full
+            connection graph does not control the roaming fly.
           </p>
           <div className="source-links">
             <a href="https://male-cns.janelia.org/" target="_blank" rel="noreferrer">
@@ -719,6 +730,14 @@ function App() {
             </a>
             <a href="https://male-cns.janelia.org/download/" target="_blank" rel="noreferrer">
               Dataset & CC BY 4.0 license
+              <ExternalLink size={14} />
+            </a>
+            <a
+              href="https://research.google/blog/a-connectomics-milestone-mapping-the-complete-male-fruit-fly-brain/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Google Research overview
               <ExternalLink size={14} />
             </a>
             <a
@@ -737,6 +756,12 @@ function App() {
             revisited. Terrain unfolds around the fly through soft exploration fog. Drag to revisit
             discovered places, or press F to follow. Panning never reveals new territory. This map
             is the observer’s record; it does not give the controller spatial memory.
+          </p>
+          <p>
+            The map brushes let you place food, water or a spider in explored, active terrain. These
+            are deliberate observer interventions, recorded with the experiment and sensed through
+            the fly’s ordinary local inputs. They do not modify the published memory assay or create
+            learning in the roaming controller.
           </p>
           <h3>A refuge with limits</h3>
           <p>
@@ -763,21 +788,34 @@ function App() {
             modeled, so there is no fixed maximum lifespan if the fly can meet its needs and avoid
             injury.
           </p>
-          <button
-            className="button secondary"
-            onClick={() => {
-              setModal(null);
-              setTab('research');
-            }}
-          >
-            <FlaskConical size={16} />
-            Open research, memory & tutorial
-          </button>
+          <div className="about-actions">
+            <button
+              className="button secondary"
+              onClick={() => {
+                setModal(null);
+                setTab('research');
+              }}
+            >
+              <FlaskConical size={16} />
+              Open research, memory & tutorial
+            </button>
+            <a
+              className="button secondary"
+              href="/docs/MOSK_guia_tecnica.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <BookOpen size={16} />
+              Technical guide (PDF · Español)
+            </a>
+          </div>
           <p>
             Snapshots save on this device every 10 seconds and when the page becomes hidden. Time
             stops while you are away. Death ends a life; a new generation preserves its complete
-            saved history. Export JSON to move an experiment between devices. Clear browser data and
-            local saves will be lost.
+            saved history. Export JSON downloads a portable backup of the current experiment and
+            archive. Import JSON restores one of those files on this device, replacing its current
+            experiment and opening the imported life paused. Clearing browser data removes local
+            saves, so a downloaded backup is useful if you want to keep or share a run.
           </p>
           <p className="method-footnote">
             World units and time are simulation units. Physiology, environmental cues, and predator

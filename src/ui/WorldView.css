@@ -2,6 +2,74 @@
   container-name: habitat;
   container-type: inline-size;
 }
+.world-canvas.painting canvas {
+  cursor: crosshair;
+}
+.world-canvas.painting canvas:active {
+  cursor: crosshair;
+}
+.observer-tools {
+  position: absolute;
+  top: 112px;
+  left: 18px;
+  z-index: 2;
+  width: 96px;
+  display: grid;
+  gap: 3px;
+  padding: 5px;
+  border: 1px solid #ded8e7;
+  border-radius: 9px;
+  background: #fffefae8;
+  box-shadow: 0 2px 9px #55406810;
+  backdrop-filter: blur(8px);
+}
+.observer-tools-label {
+  padding: 3px 5px 2px;
+  color: #8c7c9c;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+.observer-tools button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 27px;
+  padding: 4px 6px;
+  border-radius: 5px;
+  color: #776a85;
+  font-size: 11px;
+  text-align: left;
+}
+.observer-tools button:hover:not(:disabled),
+.observer-tools button.active {
+  background: #eee8f7;
+  color: #76569a;
+}
+.observer-tools button:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+.observer-tools button:focus-visible {
+  outline: 2px solid #a68bc6;
+  outline-offset: 1px;
+}
+.observer-brush-notice {
+  position: absolute;
+  left: 126px;
+  top: 120px;
+  z-index: 2;
+  max-width: min(260px, calc(100% - 150px));
+  padding: 6px 9px;
+  border: 1px solid #ded8e7;
+  border-radius: 6px;
+  background: #fffefae8;
+  color: #725f82;
+  font-size: 11px;
+  line-height: 1.3;
+  pointer-events: none;
+}
 .world-canvas .map-controls {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
@@ -117,6 +185,28 @@
   }
 }
 @container habitat (max-width: 560px) {
+  .observer-tools {
+    top: 95px;
+    left: 12px;
+    width: 81px;
+    gap: 2px;
+    padding: 4px;
+  }
+  .observer-tools-label {
+    font-size: 8px;
+  }
+  .observer-tools button {
+    min-height: 24px;
+    gap: 4px;
+    padding: 3px 4px;
+    font-size: 10px;
+  }
+  .observer-brush-notice {
+    top: 103px;
+    left: 101px;
+    max-width: calc(100% - 113px);
+    font-size: 10px;
+  }
   .world-canvas .map-controls {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     row-gap: 10px;

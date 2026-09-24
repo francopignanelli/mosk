@@ -300,7 +300,9 @@ export function BrainPanel({
           <p className="brain-disclaimer">
             Roaming controller · designed signals.
             <br />
-            MaleCNS anatomy is in the research atlas.
+            Map placements can change these values when sensed locally.
+            <br />
+            They do not train the separate memory assay. MaleCNS anatomy is in the research atlas.
           </p>
           {onResearch && (
             <button className="brain-research-link" onClick={onResearch}>

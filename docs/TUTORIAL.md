@@ -14,16 +14,20 @@ Every **New generation** dialog selects **Sensory utility model** by default, in
 
 ## 2. Explore the map
 
-| Control                                           | Use                                           |
-| ------------------------------------------------- | --------------------------------------------- |
-| Drag, or focus the map and press arrow keys       | Move the camera                               |
-| **F** while the map is focused, or **Follow fly** | Return to following the individual            |
-| Mouse wheel over the map, or zoom buttons         | Zoom between 50% and 250%                     |
-| Fullscreen                                        | Expand the habitat view                       |
-| **Movement trail**                                | Show the fly's recent path                    |
-| **Food scent field**                              | Show a soft visualization around food sources |
+| Control                                           | Use                                                    |
+| ------------------------------------------------- | ------------------------------------------------------ |
+| Drag, or focus the map and press arrow keys       | Move the camera                                        |
+| **F** while the map is focused, or **Follow fly** | Return to following the individual                     |
+| Mouse wheel over the map, or zoom buttons         | Zoom between 50% and 250%                              |
+| Fullscreen                                        | Expand the habitat view                                |
+| **Movement trail**                                | Show the fly's recent path                             |
+| **Food scent field**                              | Show a soft visualization around food sources          |
+| **Food / Water / Spider** map brush               | Place one type of stimulus in explored, active terrain |
+| **Move map**                                      | Leave the brush and pan the camera again               |
 
 Exploration reveals terrain around the fly; moving the camera does not reveal new territory. The map is generated progressively, with nearby terrain loaded for sensing and movement. Previously discovered terrain remains part of the observer's record. The utility controller does not acquire spatial memory from this record.
+
+Choose a map brush, then click or drag to place food, water or spiders within the explored, active area. Pause first and place one stimulus at a time when you want to compare a response. The added objects enter the simulated world, are recorded and saved with this experiment, and can change what the fly senses locally. A spider you place remains visible in explored, active terrain so you can inspect the intervention even before the fly senses it. Map interventions do not train the separate published memory assay. Select **Move map** to return to camera panning.
 
 The scent overlay deliberately uses low contrast. Changing its appearance or switching it off does not alter the scent signal available to the controller.
 
@@ -72,7 +76,7 @@ The assay has its own experimental timing and record. Its original biological se
 
 ## 6. Save, resume, and compare
 
-The current life, name, habitat, controller, and attached assay checkpoint are saved on this device. The checkpoint records the pinned model version, odor set, protocol, and progress cursor. Reload restores the same individual and deterministically replays the protocol to reconstruct the same synaptic weights; the save does not need a second independently editable copy of those weights. Export a JSON snapshot when you want a portable copy. Import replaces the current experiment and its archives on this device, so export first if you need both.
+The current life, name, habitat, map placements, controller, and attached assay checkpoint are saved automatically on this device. The checkpoint records the pinned model version, odor set, protocol, and progress cursor. Reload restores the same individual and deterministically replays the protocol to reconstruct the same synaptic weights; the save does not need a second independently editable copy of those weights. **Export JSON** downloads a portable backup of the current experiment and its archives for safekeeping, sharing, or moving to another device. **Import JSON** restores such a file here, replacing this device's current experiment and archives; the imported life opens paused. Export before importing if you want to keep both runs. Neither button is needed for normal autosave and reload.
 
 Starting a **New generation** archives the current individual and starts fresh controller and assay state. The journal retains previous records for comparison. They are not inherited by the new fly. Here, “generation” names a new experimental life; genetic evolution and cross-life training are not implemented.
 
