@@ -61,7 +61,7 @@ This is a distinct scientific program associated with the current life. Its biol
 
 The six-page [Spanish technical guide](public/docs/MOSK_guia_tecnica.pdf) explains the app, its research sources, observer interventions, and scientific limits. It is also linked from **About MOSK** in the app.
 
-The four-page [English product dossier](public/docs/MOSK_product_dossier_EN.pdf) presents MOSK's purpose, research provenance, on-screen experience, technical approach, and live demo. Its source is [build-mosk-dossier-en.py](scripts/build-mosk-dossier-en.py); the same PDF is available from **About MOSK**.
+The five-page [English product dossier](public/docs/MOSK_product_dossier_EN.pdf) presents MOSK's purpose, research provenance, on-screen experience, technical approach, and live demo. It includes real screenshots of the habitat, Brain Activity inspector, Experiment Journal, and memory assay. Its source is [build-mosk-dossier-en.py](scripts/build-mosk-dossier-en.py) with captures in [docs/assets/dossier](docs/assets/dossier); the same PDF is available from **About MOSK**.
 
 ## An endless world
 

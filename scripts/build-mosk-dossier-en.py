@@ -1,4 +1,4 @@
-"""Build MOSK's concise English product dossier (four A4 pages)."""
+"""Build MOSK's illustrated English product dossier (five A4 pages)."""
 
 from __future__ import annotations
 
@@ -9,15 +9,18 @@ from reportlab.lib import colors
 from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib.utils import ImageReader
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Paragraph
+from PIL import Image
 
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "output" / "pdf" / "MOSK_product_dossier_EN.pdf"
 PUBLIC_OUTPUT = ROOT / "public" / "docs" / OUTPUT.name
+SCREENSHOTS = ROOT / "docs" / "assets" / "dossier"
 OUTPUT.parent.mkdir(parents=True, exist_ok=True)
 PUBLIC_OUTPUT.parent.mkdir(parents=True, exist_ok=True)
 
@@ -142,7 +145,7 @@ def chrome(c, page, section):
     c.setFont(FONT, 7.3)
     c.setFillColor(LIGHT)
     c.drawString(M, 42, "FRANCO PIGNANELLI  /  SEPTEMBER 2026")
-    c.drawRightString(W - M, 42, f"{page:02d} / 04")
+    c.drawRightString(W - M, 42, f"{page:02d} / 05")
 
 
 def header(c, page, section, title, subtitle):
@@ -158,6 +161,18 @@ def link(c, label, url, x, y, width):
     c.setFillColor(PURPLE_DARK)
     c.drawString(x, y, label)
     c.linkURL(url, (x, y - 3, x + width, y + 10), relative=0)
+
+
+def screenshot(c, filename, crop, x, y, width):
+    """Place an unaltered crop of an actual MOSK browser capture."""
+    with Image.open(SCREENSHOTS / filename) as source:
+        image = source.crop(crop).convert("RGB")
+        height = width * image.height / image.width
+        c.drawImage(ImageReader(image), x, y, width=width, height=height)
+    c.setStrokeColor(LINE)
+    c.setLineWidth(0.7)
+    c.rect(x, y, width, height, fill=0, stroke=1)
+    return height
 
 
 def page_one(c):
@@ -299,159 +314,111 @@ def page_two(c):
     c.showPage()
 
 
-def mini_world(c, x, y, width, height):
-    rounded(c, x, y, width, height, fill=colors.HexColor("#f3f3f8"),
-            stroke=colors.HexColor("#e3e3ee"), radius=11)
-    for dx, dy, r, shade in [
-        (37, 58, 22, BLUE_PALE), (115, 137, 33, GREEN_PALE),
-        (158, 57, 24, ORANGE_PALE), (174, 129, 21, LAV),
-    ]:
-        c.setFillColor(shade)
-        c.circle(x + dx, y + dy, r, fill=1, stroke=0)
-    c.setStrokeColor(colors.HexColor("#a38bc5"))
-    c.setDash(2, 4)
-    path = c.beginPath()
-    path.moveTo(x + 29, y + 35)
-    path.curveTo(x + 64, y + 54, x + 70, y + 142, x + 146, y + 126)
-    c.drawPath(path)
-    c.setDash()
-    fly(c, x + 140, y + 126, 0.45)
-    spider(c, x + 54, y + 47, 0.45)
-    for dx, dy, color in [(105, 75, ORANGE), (161, 36, BLUE), (63, 128, GREEN)]:
-        c.setFillColor(color)
-        c.circle(x + dx, y + dy, 4, fill=1, stroke=0)
-    c.setFont(FONT, 7)
-    c.setFillColor(LIGHT)
-    c.drawString(x + 13, y + 13, "FOG  /  RESOURCES  /  TRAIL  /  COVER")
-
-
-def mini_brain(c, x, y, width, height):
-    rounded(c, x, y, width, height, fill=DARK, stroke=DARK, radius=10)
-    points = [(x + 37, y + 91), (x + 94, y + 91), (x + 155, y + 91),
-              (x + 37, y + 42), (x + 94, y + 42), (x + 155, y + 42)]
-    for a, b in [(0, 1), (1, 2), (3, 4), (4, 5), (0, 4), (3, 1)]:
-        c.setStrokeColor(colors.HexColor("#87719d"))
-        c.setLineWidth(0.9)
-        c.line(*points[a], *points[b])
-    for i, (px, py) in enumerate(points):
-        color = [colors.HexColor("#c1a6ed"), colors.HexColor("#b490d0"),
-                 colors.HexColor("#a0ccbf")][i % 3]
-        c.setFillColor(color)
-        c.circle(px, py, 4.7 if i < 3 else 3.7, fill=1, stroke=0)
-    c.setFillColor(colors.HexColor("#e8dff1"))
-    c.setFont(BOLD, 7.1)
-    c.drawString(x + 12, y + height - 19, "SENSORY    DRIVE     MOTOR")
-    c.setFont(FONT, 7)
-    c.drawString(x + 12, y + 12, "Illustrated controller channels")
-
-
 def page_three(c):
-    header(c, 3, "the on-screen experience", "Watch a decision take shape",
-           "The point is to test a cue, then follow its effect through body, behavior and record.")
+    header(c, 3, "the on-screen experience", "A world that invites experiments",
+           "A real MOSK session: the map, intervention brush and visible trail during a spider encounter.")
 
-    rounded(c, M, 457, CW, 226, fill=colors.white)
-    pill(c, "01  /  THE LIVING WORLD", M + 16, 645)
-    text(c, "Explore an endless, local habitat.", M + 16, 624, 256,
-         size=12.8, bold=True, max_height=28)
-    text(c,
-         "The fly reveals procedurally generated terrain as it moves. The map shows its path, "
-         "food, water, spiders and protective cover. Pan, zoom, follow, pause or change speed. "
-         "Use the three brushes to add a stimulus to explored terrain and watch what happens.",
-         M + 16, 592, 242, size=9.2, max_height=89)
-    text(c,
-         "Six live measures - energy, hunger, hydration, fatigue, health and arousal - "
-         "make the cost of each choice visible.",
-         M + 16, 506, 242, size=8.8, color=MUTED, max_height=42)
-    mini_world(c, 331, 476, 204, 186)
+    screenshot(c, "observatory-after-intervention.png", (118, 370, 850, 850),
+               M, 322, CW)
+    text(c, "ACTUAL INTERFACE  /  The fly, a placed spider, resources, cover and fogged terrain.",
+         M, 312, CW, size=7.8, color=MUTED, max_height=12)
 
-    rounded(c, M, 223, CW, 218, fill=colors.white)
-    mini_brain(c, M + 15, 242, 202, 181)
-    pill(c, "02  /  BRAIN ACTIVITY", 273, 403)
-    text(c, "Inspect why the model acted.", 273, 381, 263,
-         size=12.8, bold=True, max_height=31)
+    rounded(c, M, 94, 247, 193, fill=LAV)
+    pill(c, "01  /  THE LIVING WORLD", M + 15, 252,
+         fill=colors.white, color=PURPLE_DARK)
+    text(c, "Explore only what the fly reaches.", M + 15, 239, 217,
+         size=11.8, bold=True, max_height=34)
     text(c,
-         "Hover, focus or pin one of <b>18 channels</b> to see its current activation, "
-         "input and illustrated influences. If an exposed fly detects a nearby spider, "
-         "the modeled Threat and Escape channels rise; the controller changes forward "
-         "and turning commands and the fly flees.",
-         273, 345, 261, size=9.1, max_height=95)
-    text(c,
-         "These are normalized controller values, <b>not measured firing of MaleCNS neurons</b>.",
-         273, 252, 261, size=8.7, color=MUTED, max_height=27)
+         "Organic terrain is generated around the animal rather than all at once. "
+         "Its movement reveals new sectors, while food and water are consumed and replenished. "
+         "Spiders can patrol and pursue; cover can break detection.",
+         M + 15, 204, 217, size=8.9, max_height=97)
 
-    rounded(c, M, 91, CW, 116, fill=ROSE_PALE, stroke=colors.HexColor("#ecdde3"))
-    c.setFillColor(ROSE)
-    c.setFont(BOLD, 7.6)
-    c.drawString(M + 16, 184, "A CONTROLLED OBSERVATION")
-    items = [("PLACE", "Spider nearby"), ("SENSE", "Threat rises"),
-             ("ACT", "Escape turn"), ("RECORD", "Journal event")]
-    start_x = M + 16
-    step = 125
-    for i, (top, bottom) in enumerate(items):
-        x = start_x + i * step
-        c.setFillColor(INK)
-        c.setFont(BOLD, 8.2)
-        c.drawString(x, 151, top)
-        c.setFillColor(MUTED)
-        c.setFont(FONT, 7.8)
-        c.drawString(x, 134, bottom)
-        if i < 3:
-            c.setFillColor(ROSE)
-            c.setFont(BOLD, 12)
-            c.drawString(x + 104, 144, ">")
-    text(c, "The observer can compare this event with a matched run or another generation.",
-         M + 16, 119, CW - 32, size=8.4, color=MUTED, max_height=17)
+    rounded(c, 306, 94, 247, 193, fill=BLUE_PALE)
+    pill(c, "02  /  CHANGE ONE CUE", 321, 252,
+         fill=colors.white, color=BLUE)
+    text(c, "Place, pause and compare.", 321, 239, 217,
+         size=11.8, bold=True, max_height=34)
+    text(c,
+         "Paint food, water or a spider onto explored terrain. Follow or pan the camera, "
+         "zoom with the mouse wheel, and choose 1x, 2x or 5x playback. Energy, hunger, "
+         "hydration, fatigue, health and arousal show the consequences of each choice.",
+         321, 204, 217, size=8.9, max_height=100)
     c.showPage()
 
 
 def page_four(c):
-    header(c, 4, "product & reproducibility", "A research notebook, not just a game",
-           "The app keeps observations, explains its sources and lets visitors test their own questions.")
+    header(c, 4, "signals & journal", "Follow the response, then the record",
+           "The controller view explains a cue; the journal preserves the event in this life.")
 
-    rounded(c, M, 487, 247, 196, fill=BLUE_PALE)
-    pill(c, "03  /  EXPERIMENT JOURNAL", M + 15, 646,
-         fill=colors.white, color=BLUE)
-    text(c, "Keep the story of each life.", M + 15, 623, 217,
-         size=12.7, bold=True, max_height=31)
+    screenshot(c, "brain-threat-inspector.png", (873, 307, 1223, 697),
+               M, 401, 247)
+    screenshot(c, "brain-threat-inspector.png", (896, 784, 1200, 1122),
+               306, 401, 247)
     text(c,
-         "A timeline records birth, resources, threats, interventions, exploration and death. "
-         "Charts and metrics summarize the life; archived generations remain available for "
-         "comparison. Saved memory-assay checkpoints can be inspected read-only.",
-         M + 15, 588, 217, size=9.1, max_height=98)
+         "BRAIN ACTIVITY  /  Eighteen designed channels. Pinned Threat shows its input, level and "
+         "illustrated influence - not measured neuron firing.",
+         M, 390, CW, size=7.7, color=MUTED, max_height=12)
 
-    rounded(c, 306, 487, 247, 196, fill=ORANGE_PALE)
-    pill(c, "04  /  RESEARCH & LEARNING", 321, 646,
+    pill(c, "03  /  EXPERIMENT JOURNAL", M, 354,
+         fill=BLUE_PALE, color=BLUE)
+    screenshot(c, "experiment-journal.png", (118, 915, 750, 1232),
+               M, 89, CW)
+    text(c,
+         "ACTUAL FIELD NOTES  /  Interventions, encounters and terrain discoveries receive "
+         "timestamps; charts and archived lives support comparison.",
+         M, 76, CW, size=7.7, color=MUTED, max_height=12)
+    c.showPage()
+
+
+def page_five(c):
+    header(c, 5, "research & reproducibility", "Learning with visible limits",
+           "A separate published memory assay, real atlas annotations and a reproducible local run.")
+
+    screenshot(c, "research-memory-conditioned.png", (218, 1265, 1120, 1558),
+               M, 504, CW)
+    text(c,
+         "MEMORY ASSAY  /  After eight published-protocol bouts, the model's six odor-specific "
+         "connection weights differ from their initial state.",
+         M, 490, CW, size=7.7, color=MUTED, max_height=12)
+
+    rounded(c, M, 377, 247, 99, fill=ORANGE_PALE)
+    pill(c, "04  /  MEMORY ASSAY", M + 13, 449,
          fill=colors.white, color=ORANGE)
-    text(c, "Go back to the evidence.", 321, 623, 217,
-         size=12.7, bold=True, max_height=31)
     text(c,
-         "Run the separate odor-memory assay and inspect changing model weights. Search "
-         "the MaleCNS reference atlas by source-identified cells. The in-app tutorial and "
-         "About panel explain what each view means and where the science ends.",
-         321, 588, 217, size=9.1, max_height=98)
+         "The Huang-Luo mushroom-body model steps through odor conditioning, retention "
+         "and extinction. Its weights and live log are saved with this life, but do not "
+         "steer the roaming fly.",
+         M + 13, 438, 221, size=8.4, max_height=58)
 
-    rounded(c, M, 333, CW, 137, fill=DARK, stroke=DARK)
+    rounded(c, 306, 377, 247, 99, fill=GREEN_PALE)
+    pill(c, "05  /  MALECNS ATLAS", 319, 449,
+         fill=colors.white, color=GREEN)
+    text(c,
+         "Search 96 source-identified MaleCNS annotation records. These are real "
+         "anatomical labels, not the controller's 18 displayed channels or live "
+         "neuron activity.",
+         319, 438, 221, size=8.4, max_height=58)
+
+    rounded(c, M, 244, CW, 117, fill=DARK, stroke=DARK)
     c.setFillColor(colors.HexColor("#cdb8e7"))
     c.setFont(BOLD, 7.7)
-    c.drawString(M + 16, 444, "TECHNICAL FOUNDATION")
+    c.drawString(M + 16, 337, "TECHNICAL FOUNDATION")
     text(c,
-         "<b>React + TypeScript + Vite</b> power a seeded, deterministic 30 Hz simulation. "
-         "The world generates near the fly rather than building infinity in advance. "
-         "Local sensory input drives an interpretable utility controller; the separate "
-         "published memory assay has its own circuit state. IndexedDB autosaves lives, "
-         "while JSON import/export provides portable backups. Naming and new generations "
-         "support controlled comparisons; no learned state is inherited.",
-         M + 16, 427, CW - 32, size=9.2, leading=13.2,
-         color=colors.HexColor("#e9e2f1"), max_height=77)
+         "<b>React + TypeScript + Vite</b> host a seeded, deterministic 30 Hz local simulation. "
+         "Terrain generates near the fly; local cues feed an interpretable utility controller. "
+         "IndexedDB autosaves lives and assay checkpoints, while JSON import/export makes "
+         "portable backups. New generations archive the previous life without inherited learning.",
+         M + 16, 320, CW - 32, size=8.9, leading=12.5,
+         color=colors.HexColor("#e9e2f1"), max_height=71)
 
-    rounded(c, M, 93, CW, 222, fill=colors.white)
+    rounded(c, M, 93, CW, 136, fill=colors.white)
     c.setFillColor(INK)
-    c.setFont(BOLD, 12.5)
-    c.drawString(M + 16, 289, "Explore the demo and original sources")
-    link(c, "Live MOSK demo  -  moskdemo.netlify.app",
-         "https://moskdemo.netlify.app/", M + 16, 266, CW - 32)
-    rule(c, M + 16, 255, W - M - 16)
+    c.setFont(BOLD, 11.5)
+    c.drawString(M + 16, 209, "Explore the demo and original sources")
     sources = [
+        ("Live MOSK demo  -  moskdemo.netlify.app",
+         "https://moskdemo.netlify.app/"),
         ("Google Research overview of the MaleCNS release",
          "https://research.google/blog/a-connectomics-milestone-mapping-the-complete-male-fruit-fly-brain/"),
         ("Berg et al., Cell 2026  -  doi.org/10.1016/j.cell.2026.08.015",
@@ -463,14 +430,14 @@ def page_four(c):
         ("MOSK source code  -  github.com/francopignanelli/mosk",
          "https://github.com/francopignanelli/mosk"),
     ]
-    y = 238
+    y = 191
     for label, url in sources:
         link(c, label, url, M + 16, y, CW - 32)
-        y -= 22
+        y -= 16
     text(c,
-         "Made by <b>Franco Pignanelli</b> as an independent visual and interactive "
-         "exploration of published work. MOSK is not affiliated with Google or HHMI Janelia.",
-         M + 16, 126, CW - 32, size=8.5, color=MUTED, max_height=29)
+         "Independent project by <b>Franco Pignanelli</b>. MOSK is not affiliated with "
+         "Google or HHMI Janelia.",
+         M, 83, CW, size=8.2, color=MUTED, max_height=16)
     c.showPage()
 
 
@@ -479,7 +446,7 @@ def main():
     c.setTitle("MOSK | Product dossier")
     c.setAuthor("Franco Pignanelli")
     c.setSubject("An interactive product for exploring fruit-fly connectomics research")
-    for page in (page_one, page_two, page_three, page_four):
+    for page in (page_one, page_two, page_three, page_four, page_five):
         page(c)
     c.save()
     shutil.copyfile(OUTPUT, PUBLIC_OUTPUT)
