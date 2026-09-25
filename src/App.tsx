@@ -808,6 +808,15 @@ function App() {
               <BookOpen size={16} />
               Technical guide (PDF · Español)
             </a>
+            <a
+              className="button secondary"
+              href="/docs/MOSK_product_dossier_EN.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <BookOpen size={16} />
+              Product dossier (PDF · English)
+            </a>
           </div>
           <p>
             Snapshots save on this device every 10 seconds and when the page becomes hidden. Time

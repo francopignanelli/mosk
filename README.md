@@ -61,6 +61,8 @@ This is a distinct scientific program associated with the current life. Its biol
 
 The six-page [Spanish technical guide](public/docs/MOSK_guia_tecnica.pdf) explains the app, its research sources, observer interventions, and scientific limits. It is also linked from **About MOSK** in the app.
 
+The four-page [English product dossier](public/docs/MOSK_product_dossier_EN.pdf) presents MOSK's purpose, research provenance, on-screen experience, technical approach, and live demo. Its source is [build-mosk-dossier-en.py](scripts/build-mosk-dossier-en.py); the same PDF is available from **About MOSK**.
+
 ## An endless world
 
 The world expands in all directions without a designed edge or wraparound. Smooth, warped world-space fields shape vegetation, moisture and clearings. Jittered candidates create uneven clusters, irregular ponds and varying numbers of resources, cover patches and predators. The 1,200 × 760-unit sectors are storage units, not repeating layouts: vegetation and landscape fields continue across their boundaries without empty border strips. Generation never advances the animal's random generator. Upgraded experiments retain terrain already generated under the old rules; new territory uses the organic generator.
